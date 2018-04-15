@@ -66,10 +66,11 @@ def main():
         with open("./pgportfolio/net_config.json") as file:
             config = json.load(file)
         config = preprocess_config(config)
-        start = time.mktime(datetime.strptime(config["input"]["start_date"], "%Y/%m/%d").timetuple())
-        end = time.mktime(datetime.strptime(config["input"]["end_date"], "%Y/%m/%d").timetuple())
+        start = time.mktime(datetime.strptime(config["input"]["start_date"], "%Y/%m/%d %H:%M").timetuple())
+        end = time.mktime(datetime.strptime(config["input"]["end_date"], "%Y/%m/%d %H:%M").timetuple())
         DataMatrices(start=start,
                      end=end,
+                     market = config["input"]["market"],
                      feature_number=config["input"]["feature_number"],
                      window_size=config["input"]["window_size"],
                      online=True,

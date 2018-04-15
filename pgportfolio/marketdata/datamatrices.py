@@ -7,7 +7,9 @@ import pandas as pd
 import logging
 from pgportfolio.tools.configprocess import parse_time
 from pgportfolio.tools.data import get_volume_forward, get_type_list
+from pgportfolio.constants import *
 import pgportfolio.marketdata.replaybuffer as rb
+import sys
 
 MIN_NUM_PERIOD = 3
 
@@ -40,15 +42,21 @@ class DataMatrices:
         type_list = get_type_list(feature_number)
         self.__features = type_list
         self.feature_number = feature_number
+        self.market = market
         volume_forward = get_volume_forward(self.__end-start, test_portion, portion_reversed)
-        self.__history_manager = gdm.HistoryManager(coin_number=coin_filter, end=self.__end,
+        
+        if market == "poloniex":
+            self.__history_manager = gdm.HistoryManager(coin_number=coin_filter, end=self.__end,
                                                     volume_average_days=volume_average_days,
                                                     volume_forward=volume_forward, online=online)
-        if market == "poloniex":
             self.__global_data = self.__history_manager.get_global_panel(start,
                                                                          self.__end,
                                                                          period=period,
                                                                          features=type_list)
+
+        elif market == "gdax":
+            self.__global_data = pd.read_pickle(GDAX_DIR)
+            
         else:
             raise ValueError("market {} is not valid".format(market))
         self.__period_length = period
@@ -116,7 +124,10 @@ class DataMatrices:
 
     @property
     def coin_list(self):
-        return self.__history_manager.coins
+        if self.market == "gdax":
+            return ['BTC', 'LTC', 'ETH']
+        else:
+            return self.__history_manager.coins
 
     @property
     def num_train_samples(self):

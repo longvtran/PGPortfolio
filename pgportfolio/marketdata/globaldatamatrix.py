@@ -16,6 +16,12 @@ class HistoryManager:
     # if offline ,the coin_list could be None
     # NOTE: return of the sqlite results is a list of tuples, each tuple is a row
     def __init__(self, coin_number, end, volume_average_days=1, volume_forward=0, online=True):
+        """
+        :param coin_number: number of coins that would be selected (may also be referred
+        to as coin_filter)
+        :param end: Unix time
+        :param volume_average_days
+        """
         self.initialize_db()
         self.__storage_period = FIVE_MINUTES  # keep this as 300
         self._coin_number = coin_number

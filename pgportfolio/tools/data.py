@@ -105,6 +105,13 @@ def count_periods(start, end, period_length):
 
 
 def get_volume_forward(time_span, portion, portion_reversed):
+    """
+    :param time_span: the difference between end and start time
+    :portion: test portion (if the testing period is at the end of the dataset)
+    
+    Returns:
+        Unix time span corresponding to the test portion
+    """
     volume_forward = 0
     if not portion_reversed:
         volume_forward = time_span*portion
