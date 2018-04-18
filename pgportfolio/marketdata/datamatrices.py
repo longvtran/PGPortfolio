@@ -54,8 +54,25 @@ class DataMatrices:
                                                                          period=period,
                                                                          features=type_list)
 
+        # If the market is gdax, read directly from the pickle file at GDAX_DIR
         elif market == "gdax":
-            self.__global_data = pd.read_pickle(GDAX_DIR)
+            global_data = pd.read_pickle(GDAX_DIR)
+            # If 4 features are used (close, high, low, open):
+            if feature_number == 4:
+                self.__global_data = global_data
+            # If 3 features are used (close, high, low):
+            elif feature_number == 3:
+                self.__global_data = global_data.loc[['close', 'high', 'low']]
+            # If 2 features are used (close, volume):
+            elif feature_number == 2:
+                # gdax does not have volume data
+                raise NotImplementedError("the feature volume is not supported currently")
+            # If 1 features is used (close):
+            elif feature_number == 1:
+                self.__global_data = global_data.loc[['close']]
+            else:
+                raise ValueError("feature number could not be %s" % feature_number)
+                
             
         else:
             raise ValueError("market {} is not valid".format(market))
